@@ -33,6 +33,8 @@ const postSchema = new mongoose.Schema({
   title: String,
   body: String,
   tags: [String],
+  name: String,
+  number: String,
 });
 const Post = mongoose.model('Post', postSchema);
 
@@ -40,7 +42,7 @@ const upload = multer({ storage: storage });
 app.use(express.json());
 app.post('/createPost', upload.single('media'), async (req, res) => {
   try {
-    const { title, body, tags } = req.body;
+    const { title, body, tags, name, number } = req.body;
     const mediaUrl = req.file.path;
 
     const newPost = new Post({
@@ -48,6 +50,8 @@ app.post('/createPost', upload.single('media'), async (req, res) => {
       title: title,
       body: body,
       tags: tags.split(','),
+      name: name,
+      number: number,
     });
 
     await newPost.save();
