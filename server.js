@@ -7,13 +7,11 @@ require('dotenv').config();
 
 const app = express();
 
-// ADD DATABASE DETAILS
-mongoose.connect('mongodb://???', {
+mongoose.connect(DBURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-// ADD CLOUDINARY API
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
