@@ -31,6 +31,7 @@ class QueryBuilder<T> {
     excludeFields.forEach((el) => delete queryObject[el]);
 
     this.modelQuery = this.modelQuery.find(queryObject as FilterQuery<T>);
+    // find({})
 
     return this;
   }

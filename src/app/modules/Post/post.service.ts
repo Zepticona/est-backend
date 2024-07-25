@@ -3,18 +3,19 @@ import { AppError } from "../../errors/AppError";
 import httpStatus from "http-status";
 import Post from "./post.model";
 import { uploadImageToCloudinary } from "./post.utils";
+import QueryBuilder from "../../builder/QueryBuilder";
 
-export const createPostIntoDB = async (post: Record<string, unknown>) => {
+const createPostIntoDB = async (req: Request) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const { body, title, tags, contactNo, status } = post.body;
+    const { body, title, tags, contactNo, status, resolved, type } = req.body;
 
     const imgUrls: string[] = [];
     const vidUrls: string[] = [];
 
-    for (const file of post.files) {
+    for (const file of req.files) {
       if (file.mimetype.startsWith("image")) {
         const imgUrl = await uploadImageToCloudinary(file.path);
         imgUrls.push(imgUrl);
@@ -54,4 +55,21 @@ export const createPostIntoDB = async (post: Record<string, unknown>) => {
     session.endSession();
     throw new AppError(httpStatus.BAD_REQUEST, "Failed to upload post!");
   }
+};
+
+const getAllPostsFromDB = async (query: Record<string, unknown>) => {
+  const searchableFields = ["body", "title", "tags"];
+  const builtQuery = new QueryBuilder(Post.find(), query)
+    .search(searchableFields)
+    .filter()
+    .paginate()
+    .sort();
+  const result = await builtQuery.modelQuery;
+
+  return result;
+};
+
+export default {
+  createPostIntoDB,
+  getAllPostsFromDB,
 };

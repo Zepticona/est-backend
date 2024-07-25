@@ -8,12 +8,19 @@ const postSchema = new Schema<IPost>(
     imgUrls: Array,
     vidUrls: Array,
     contactNo: String,
-    status: ["approved", "deleted", "waiting-approval"],
+    status: ["approved", "deleted", "waiting-approval", "resolved"],
+    type: ["archive", "help-post"],
   },
   {
     timestamps: true,
   }
 );
+
+postSchema.pre("find", function (next) {
+  this.find({ status: { $ne: "deleted" } });
+
+  next();
+});
 
 const Post = model<IPost>("Post", postSchema);
 

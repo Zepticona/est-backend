@@ -5,5 +5,6 @@ export interface IPost {
   imgUrls: string[];
   vidUrls: string[];
   contactNo: string;
-  status: "waiting-approval" | "approved" | "deleted";
+  status: "waiting-approval" | "approved" | "deleted" | "resolved";
+  type: "help-post" | "archive";
 }
